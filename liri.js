@@ -1,7 +1,10 @@
 require("dotenv").config();
 
+// import { spotify } from "keys";
+
 var Spotify = require('node-spotify-api');
 var axios = require("axios");
+var fs = require("fs");
 
 var spotify = new Spotify({
   id: "fa22ad241c0f418387adfe88d3582729",
@@ -18,19 +21,19 @@ var OMDBurl = "http://www.omdbapi.com/?apikey=" + OMDBkey + "&t=" + search + "&y
 
 function RunSpotify() {
   spotify
-  .search({ type: 'track', query: search })
-  .then(function(response) {
-  for (var i = 0; i < response.tracks.items.length; i++) {
-    console.log("Artist : " + JSON.stringify(response.tracks.items[i].artists[0].name));
-    console.log("Album : " + JSON.stringify(response.tracks.items[i].album.name));
-    console.log("Track : " + JSON.stringify(response.tracks.items[i].name));
-    console.log("Track Preview: " + JSON.stringify(response.tracks.items[i].preview_url));
-    console.log("==========================");
-  }
-  })
-  .catch(function(err) {
-    console.log(err);
-  });
+    .search({ type: 'track', query: search })
+    .then(function (response) {
+      for (var i = 0; i < response.tracks.items.length; i++) {
+        console.log("Artist : " + JSON.stringify(response.tracks.items[i].artists[0].name));
+        console.log("Album : " + JSON.stringify(response.tracks.items[i].album.name));
+        console.log("Track : " + JSON.stringify(response.tracks.items[i].name));
+        console.log("Track Preview: " + JSON.stringify(response.tracks.items[i].preview_url));
+        console.log("==========================");
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
 }
 
 function RunOMDB() {
@@ -38,7 +41,7 @@ function RunOMDB() {
     method: "get",
     url: OMDBurl
   })
-  .then(function(response) {
+    .then(function (response) {
 
       console.log("Movie Title : " + response.data.Title);
       console.log("Year of Release : " + response.data.Year);
@@ -50,6 +53,25 @@ function RunOMDB() {
       console.log("Actors : " + response.data.Actors);
       console.log("=========================")
 
+    })
+}
+
+function RunDoIt() {
+  fs.readFile("random.txt", "utf-8", function (err, data) {
+
+    if(err) {
+      return console.log(err);
+    }
+
+    var DataArr = data.split(",");
+    var DoItCommand = DataArr[0];
+    search = DataArr[1]; 
+
+    if(DoItCommand == "spotify-this-song") {
+      RunSpotify()
+    } else if (DoItCommand == "movie-this") {
+      RunOMDB()
+    }
   })
 }
 
@@ -59,4 +81,6 @@ if (command == "spotify-this-song") {
   RunSpotify()
 } else if (command == "movie-this") {
   RunOMDB()
+} else if (command == "do-what-it-says") {
+  RunDoIt()
 }
