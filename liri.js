@@ -1,22 +1,21 @@
 require("dotenv").config();
 
-// import { spotify } from "keys";
-
 var Spotify = require('node-spotify-api');
 var axios = require("axios");
 var fs = require("fs");
+var keys = require("./keys.js")
 
-var spotify = new Spotify({
-  id: "fa22ad241c0f418387adfe88d3582729",
-  secret: "ab25272f380e482dba2f124478127118"
-});
+var spotify = new Spotify(keys.spotify);
 
 var command = process.argv[2];
 var search = process.argv[3];
 
 
-var OMDBkey = "208ebee4";
+var OMDBkey = keys.OMDB.id;
 var OMDBurl = "http://www.omdbapi.com/?apikey=" + OMDBkey + "&t=" + search + "&y=&plot=short";
+
+var BandsKey = keys.Bands.id;
+var BandsURL = "https://rest.bandsintown.com/artists/" + search + "/events?app_id=" + BandsKey;
 
 
 function RunSpotify() {
@@ -75,6 +74,17 @@ function RunDoIt() {
   })
 }
 
+function RunBands() {
+  axios({
+    method: "get",
+    url: BandsURL
+  }).then(function (response) {
+    for (var i = 0; i < response.data.lenth; i++) {
+      
+    }
+  })
+}
+
 
 
 if (command == "spotify-this-song") {
@@ -83,4 +93,6 @@ if (command == "spotify-this-song") {
   RunOMDB()
 } else if (command == "do-what-it-says") {
   RunDoIt()
+} else if (command == "concert-this") {
+  RunBands()
 }
