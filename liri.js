@@ -3,7 +3,8 @@ require("dotenv").config();
 var Spotify = require('node-spotify-api');
 var axios = require("axios");
 var fs = require("fs");
-var keys = require("./keys.js")
+var keys = require("./keys.js");
+var moment = require("moment")
 
 var spotify = new Spotify(keys.spotify);
 
@@ -28,12 +29,43 @@ function RunSpotify() {
         console.log("Track : " + JSON.stringify(response.tracks.items[i].name));
         console.log("Track Preview: " + JSON.stringify(response.tracks.items[i].preview_url));
         console.log("==========================");
+        var data = {
+          Artist: JSON.stringify(response.tracks.items[i].artists[0].name),
+          Album: JSON.stringify(response.tracks.items[i].album.name),
+          Track: JSON.stringify(response.tracks.items[i].name),
+          TrackPreview: JSON.stringify(response.tracks.items[i].preview_url)
+        }
+        fs.appendFileSync("log.txt", data.Artist + '/r/n', "utf-8", function(err) {
+          if (err) {
+            console.log(err)
+          }
+        })
+        fs.appendFileSync("log.txt", data.Album , "utf-8", function(err) {
+          if (err) {
+            console.log(err)
+          }
+        })
+        fs.appendFileSync("log.txt", data.Track , "utf-8", function(err) {
+          if (err) {
+            console.log(err)
+          }
+        })
+        fs.appendFileSync("log.txt", data.TrackPreview , "utf-8", function(err) {
+          if (err) {
+            console.log(err)
+          }
+        })
+        fs.appendFileSync("log.txt", "=======================" , "utf-8", function(err) {
+          if (err) {
+            console.log(err)
+          }
+        })
       }
     })
     .catch(function (err) {
       console.log(err);
     });
-}
+};
 
 function RunOMDB() {
   axios({
@@ -52,15 +84,15 @@ function RunOMDB() {
       console.log("Actors : " + response.data.Actors);
       console.log("=========================")
 
-    })
-}
+    });
+};
 
 function RunDoIt() {
   fs.readFile("random.txt", "utf-8", function (err, data) {
 
     if(err) {
       return console.log(err);
-    }
+    };
 
     var DataArr = data.split(",");
     var DoItCommand = DataArr[0];
@@ -70,20 +102,27 @@ function RunDoIt() {
       RunSpotify()
     } else if (DoItCommand == "movie-this") {
       RunOMDB()
-    }
-  })
-}
+    } else if (DoItCommand == "concert-this") {
+      RunBands()
+    } else if (DoItCommand == "do-what-it-says") {
+      RunDoIt()
+    };
+  });
+};
 
 function RunBands() {
   axios({
     method: "get",
     url: BandsURL
   }).then(function (response) {
-    for (var i = 0; i < response.data.lenth; i++) {
-      
-    }
-  })
-}
+    for (var i = 0; i < response.data.length; i++) {
+      console.log("Lineup : " + response.data[i].lineup);
+      console.log("Venue Name : " + response.data[i].venue.name);
+      console.log("Date of Event : " + moment(response.data[i].datetime).format("MM/DD/YYYY"));
+      console.log("============================");
+    };
+  });
+};
 
 
 
@@ -95,4 +134,4 @@ if (command == "spotify-this-song") {
   RunDoIt()
 } else if (command == "concert-this") {
   RunBands()
-}
+};
