@@ -1,5 +1,8 @@
 # LIRI
 
+Video Tutorial
+https://www.youtube.com/watch?v=0eBZuKWeaZ0
+
 This is a command line application using NodeJS.
 
 After locating the root folder and entering node liri.js you then have the opportunity to enter 2 different arguments.
