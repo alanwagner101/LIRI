@@ -35,7 +35,7 @@ function RunSpotify() {
                 console.log(err)
               }
             })
-            fs.appendFileSync("log.txt","\n" + command + "  " + search + "\n", "utf-8", function (err) {
+            fs.appendFileSync("log.txt","\n" + command + "  " + "The Sign" + "\n", "utf-8", function (err) {
               if (err) {
                 console.log(err)
               }
@@ -242,6 +242,7 @@ function RunBands() {
     for (var i = 0; i < response.data.length; i++) {
       console.log("Lineup : " + response.data[i].lineup);
       console.log("Venue Name : " + response.data[i].venue.name);
+      console.log("Location : " + response.data[i].venue.city + ", " + response.data[i].venue.region);
       console.log("Date of Event : " + moment(response.data[i].datetime).format("MM/DD/YYYY"));
       console.log("============================");
       fs.appendFileSync("log.txt", "\n==========================\n", "utf-8", function (err) {
@@ -262,6 +263,7 @@ function RunBands() {
       var data = {
         Lineup: "\n" + "Lineup : " + response.data[i].lineup + "\n",
         Venue: "\n" + "Venue Name : " + response.data[i].venue.name + "\n",
+        Location: "\n" + "Location : " + response.data[i].venue.city + ", " + response.data[i].venue.region + "\n",
         Date: "\n" + "Date of Event : " + moment(response.data[i].datetime).format("MM/DD/YYYY") + "\n",
       }
       fs.appendFileSync("log.txt", data.Lineup, "utf-8", function (err) {
